@@ -1,1 +1,1 @@
-# JXGL_project
+# JXGL
