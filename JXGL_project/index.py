@@ -1,12 +1,8 @@
-import pymssql
-conn = pymssql.connect(host='localhost',user='sa',password='000000',database='test',charset='GBK')
-cursor = conn.cursor()
-print(conn)
-print(cursor)
-cursor.execute('select * from student')
-data = cursor.fetchall()
-print(data)
+import tkinter
 
-cursor.close()
-conn.close()
+window = tkinter.Tk()
+window.title('My Window')
+# 宽x高
+window.geometry('500x500')
+window.mainloop()
 

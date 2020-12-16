@@ -1,13 +1,45 @@
 import tkinter
 import tkinter.messagebox
+import pymssql
 
 
+class ConnectDatabase(object):
+    def __init__(self, host='localhost', database='JXGL_system', charset='GBK'):
+        self.conn = pymssql.connect(host=host, database=database, charset=charset)
+        self.cursor = self.conn.cursor()
+
+    def __enter__(self):
+        return self.cursor
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            self.conn.rollback()
+        try:
+            self.conn.commit()
+        except Exception:
+            self.conn.rollback()
+        finally:
+            self.cursor.close()
+            self.conn.close()
 
 
+# with ConnectDatabase() as cursor:
+#     sql = "select * from student"
+#     cursor.execute(sql)
+#     data = cursor.fetchall()
+#     print(data)
+#
+# print('男'.encode('GBK'))
 
+with ConnectDatabase() as cursor:
+    sql = "select course.cno,cname from student_course join course on course.cno=student_course.cno where student_course.sno={} ".format('201901')
+    print(sql)
+    cursor.execute(sql)
+    course_list = cursor.fetchall()
+    print(course_list)
 
-
-
+# print(type('dfsa       '.strip()))
+# print('dfsa ,safs, afdsa      '.split(','))
 # window = tkinter.Tk()
 # window.title('My Window')
 # # 宽x高
