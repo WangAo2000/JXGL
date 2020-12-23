@@ -45,7 +45,6 @@ def create_login_window():
                 valid_password = valid_password.strip()
                 # 验证密码
                 if student_id == valid_student_id and password == valid_password:
-                    print('登录成功')
                     login_window.destroy()
                     create_student_index_window(valid_student_id)
                 else:
@@ -68,7 +67,6 @@ def create_login_window():
                 valid_password = valid_password.strip()
                 # 验证密码
                 if student_id == valid_teacher_id and password == valid_password:
-                    print('登录成功')
                     login_window.destroy()
                     create_teacher_index_window(valid_teacher_id)
                 else:
@@ -83,7 +81,7 @@ def create_login_window():
 
     # 创建登录窗口
     login_window = tkinter.Tk()
-    login_window.geometry('400x250')
+    login_window.geometry('400x250+550+250')
     # 输入的变量
     student_id_input = tkinter.StringVar()
     password_input = tkinter.StringVar()
@@ -134,7 +132,6 @@ def create_student_index_window(student_id):
             c_set.add(var)
 
     def add_course(student_id):
-        print(student_id)
         if len(c_set) != 0:
             for cno in c_set:
                 with ConnectDatabase() as cursor:
@@ -169,7 +166,7 @@ def create_student_index_window(student_id):
     birthday = data[4].strip()
     professional = data[5].strip()
     index_window = tkinter.Tk()
-    index_window.geometry('600x600')
+    index_window.geometry('600x600+450+100')
 
     # 学生信息
     info_frame = tkinter.Frame(index_window)
@@ -234,7 +231,6 @@ def create_student_index_window(student_id):
             student_id)
         cursor.execute(sql)
         course_list = cursor.fetchall()
-        print(course_list)
 
     # 已选课程的插件
     course_frame = tkinter.Frame(index_window)
@@ -314,7 +310,6 @@ def create_teacher_index_window(teacher_id):
         sql = "select * from teacher where tno='%s'" % teacher_id
         cursor.execute(sql)
         data = cursor.fetchone()
-        print(data)
     teacher_id = data[0].strip()
     teacher_name = data[1].strip()
     password = data[2].strip()
@@ -323,7 +318,7 @@ def create_teacher_index_window(teacher_id):
     professional = data[5].strip()
     prof = data[6].strip()
     index_window = tkinter.Tk()
-    index_window.geometry('600x600')
+    index_window.geometry('600x600+450+100')
     # 教师信息
     info_frame = tkinter.Frame(index_window)
     info_title = tkinter.Label(info_frame, text='教师信息')
@@ -386,7 +381,6 @@ def create_teacher_index_window(teacher_id):
         sql = "select cno,cname from course where tno={};".format(teacher_id)
         cursor.execute(sql)
         course_list = cursor.fetchall()
-        print(course_list)
 
     # 已选课程的插件
     course_frame = tkinter.Frame(index_window)
@@ -428,7 +422,7 @@ def create_teacher_index_window(teacher_id):
 
 def create_course_window(cno):
     course_window = tkinter.Tk()
-    course_window.geometry('600x600')
+    course_window.geometry('600x600+500+150')
     with ConnectDatabase() as cursor:
         # 获取课程名
         sql = "select cname from course where cno={}".format(cno)
@@ -443,7 +437,6 @@ def create_course_window(cno):
             cno)
         cursor.execute(sql)
         student_list = cursor.fetchall()
-        print(student_list)
 
     course_name_label = tkinter.Label(course_window, text='课程名称：' + course_name)
     course_teacher_label = tkinter.Label(course_window, text='授课教师：' + teacher_name)
@@ -491,17 +484,20 @@ def create_student_update_window(student_id):
                 sql = "update student set sbirthday='%s',password='%s' where sno='%s'" % (
                     new_birthday, new_password, student_id)
                 cursor.execute(sql)
+            update_window.destroy()
+            create_student_index_window(student_id)
+
+    def cancel_update():
         update_window.destroy()
         create_student_index_window(student_id)
 
     update_window = tkinter.Tk()
-    update_window.geometry('600x400')
+    update_window.geometry('600x400+450+100')
     # 查询基本信息
     with ConnectDatabase() as cursor:
         sql = "select * from student where sno='%s'" % student_id
         cursor.execute(sql)
         info = cursor.fetchone()
-        print(info)
     student_id = info[0].strip()
     student_name = info[1].strip()
     password = info[2].strip()
@@ -541,6 +537,7 @@ def create_student_update_window(student_id):
     password_label = tkinter.Label(info_frame, text='密码：')
     password_entry = tkinter.Entry(info_frame, textvariable=password_input)
     update_button = tkinter.Button(info_frame, text='修改信息', command=update_info)
+    cancel_update_button = tkinter.Button(info_frame, text='取消修改', command=cancel_update)
 
     # 布局
     info_frame.place(x=10, y=50)
@@ -558,6 +555,7 @@ def create_student_update_window(student_id):
     password_label.grid(row=3, column=2, sticky=tkinter.W, padx=10)
     password_entry.grid(row=3, column=3, sticky=tkinter.W, padx=10)
     update_button.grid(row=4, column=0, sticky=tkinter.W, padx=10)
+    cancel_update_button.grid(row=4, column=1, sticky=tkinter.W, padx=10)
 
     update_window.mainloop()
 
@@ -580,13 +578,12 @@ def create_teacher_update_window(teacher_id):
         create_teacher_index_window(teacher_id)
 
     update_window = tkinter.Tk()
-    update_window.geometry('600x400')
+    update_window.geometry('600x400+450+100')
     # 查询基本信息
     with ConnectDatabase() as cursor:
         sql = "select * from teacher where tno='%s'" % teacher_id
         cursor.execute(sql)
         info = cursor.fetchone()
-        print(info)
     teacher_id = info[0].strip()
     teacher_name = info[1].strip()
     password = info[2].strip()
