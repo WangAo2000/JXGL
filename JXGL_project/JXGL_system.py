@@ -574,8 +574,12 @@ def create_teacher_update_window(teacher_id):
                 sql = "update teacher set tbirthday='%s',password='%s' where tno='%s'" % (
                     new_birthday, new_password, teacher_id)
                 cursor.execute(sql)
+            update_window.destroy()
+            create_teacher_index_window(teacher_id)
+
+    def cancel_update():
         update_window.destroy()
-        create_teacher_index_window(teacher_id)
+        create_student_index_window(teacher_id)
 
     update_window = tkinter.Tk()
     update_window.geometry('600x400+450+100')
@@ -628,6 +632,7 @@ def create_teacher_update_window(teacher_id):
     prof_label = tkinter.Label(info_frame, text='称职：')
     prof_entry = tkinter.Entry(info_frame, textvariable=prof_input)
     update_button = tkinter.Button(info_frame, text='修改信息', command=update_info)
+    cancel_update_button = tkinter.Button(info_frame, text='修改信息', command=cancel_update)
 
     # 布局
     info_frame.place(x=10, y=50)
@@ -647,6 +652,7 @@ def create_teacher_update_window(teacher_id):
     prof_label.grid(row=4, column=0, sticky=tkinter.W, padx=10)
     prof_entry.grid(row=4, column=1, sticky=tkinter.W, padx=10)
     update_button.grid(row=5, column=0, sticky=tkinter.W, padx=10)
+    cancel_update_button.grid(row=5, column=1, sticky=tkinter.W, padx=10)
 
     update_window.mainloop()
 
